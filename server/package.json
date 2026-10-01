@@ -1,0 +1,39 @@
+{
+  "name": "ecoai-server",
+  "version": "2.0.0",
+  "private": true,
+  "description": "EcoAI unified backend: REST API + MongoDB + serves the React frontend",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --ext js,json --signal SIGTERM src/dev.js",
+    "start": "node src/index.js",
+    "seed": "node scripts/seed.js",
+    "create-staff": "node scripts/createStaff.js",
+    "build:routes": "node scripts/buildTruckRoutes.js",
+    "create-admin": "node scripts/createStaff.js --role admin"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "google-auth-library": "^11.1.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.2",
+    "morgan": "^1.12.1",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.10",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.3.0",
+    "nodemon": "^3.1.14"
+  }
+}
