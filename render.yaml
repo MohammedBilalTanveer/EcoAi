@@ -1,0 +1,46 @@
+# Render Blueprint for the EcoAI API (server/).
+# The website is deployed separately on Vercel from frontend/ — see DEPLOY.md.
+# Values marked "sync: false" are asked for when you create the Blueprint.
+services:
+  - type: web
+    name: ecoai-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: node src/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # The website is served by Vercel, not by this service.
+      - key: SERVE_FRONTEND
+        value: "false"
+      - key: JWT_SECRET
+        generateValue: true
+      # mongodb+srv://<user>:<password>@<cluster>.mongodb.net/ecoai
+      - key: MONGODB_URI
+        sync: false
+      # Your Vercel URL, e.g. https://ecoai.vercel.app
+      - key: PUBLIC_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # GreenBot chat + AI photo checks
+      - key: OPENAI_API_KEY
+        sync: false
+      # Your first admin account (created on startup; remove ADMIN_PASSWORD afterwards)
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Email over HTTPS (Render's free plan blocks SMTP)
+      - key: BREVO_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: AUTHORITY_EMAIL
+        sync: false
+      # Optional: photos on Cloudinary's CDN instead of MongoDB
+      - key: CLOUDINARY_URL
+        sync: false

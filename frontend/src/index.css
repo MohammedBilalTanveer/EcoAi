@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply min-h-screen bg-ink-950 font-sans text-ink-200 antialiased;
+    background-image:
+      radial-gradient(60rem 30rem at 85% -10%, rgba(130, 69, 236, 0.16), transparent 60%),
+      radial-gradient(50rem 26rem at -10% 0%, rgba(96, 165, 250, 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4 {
+    @apply font-bold tracking-tight text-white;
+  }
+  ::selection {
+    @apply bg-brand-400/30 text-white;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible {
+    @apply outline-none ring-2 ring-brand-400/60 ring-offset-2 ring-offset-ink-950;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+  }
+  input[type='datetime-local']::-webkit-calendar-picker-indicator,
+  input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+    cursor: pointer;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(130, 69, 236, 0.3) transparent;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply rounded-2xl border border-white/[0.07] bg-ink-900/80 shadow-card backdrop-blur-sm;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-brand-400/25 hover:bg-ink-900;
+  }
+
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold transition duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-sm {
+    @apply rounded-lg px-3 py-1.5 text-xs;
+  }
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+  .btn-primary {
+    @apply bg-brand-500 text-white shadow-glow hover:bg-brand-400 active:bg-brand-600;
+  }
+  .btn-accent {
+    @apply bg-accent text-white hover:bg-accent-500;
+  }
+  .btn-secondary {
+    @apply bg-white/[0.06] text-ink-100 ring-1 ring-inset ring-white/10 hover:bg-white/10;
+  }
+  .btn-ghost {
+    @apply text-ink-300 hover:bg-white/5 hover:text-white;
+  }
+  .btn-danger {
+    @apply bg-red-500/10 text-red-300 ring-1 ring-inset ring-red-500/30 hover:bg-red-500/20;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-ink-850 px-3.5 py-2.5 text-sm text-ink-100 outline-none transition placeholder:text-ink-500 hover:border-white/20 focus:border-brand-400/60 focus:ring-2 focus:ring-brand-400/20 disabled:opacity-60;
+  }
+  .input-error {
+    @apply border-red-500/60 focus:border-red-400 focus:ring-red-400/20;
+  }
+  select.input {
+    @apply cursor-pointer appearance-none bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238a86a8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink-200;
+  }
+  .hint {
+    @apply mt-1.5 text-xs text-ink-400;
+  }
+
+  .chip {
+    @apply inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-ink-300 transition hover:border-white/20 hover:text-white;
+  }
+  .chip-active {
+    @apply border-brand-400/50 bg-brand-400/10 text-brand-200 hover:border-brand-400/60 hover:text-brand-100;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.16em] text-brand-300;
+  }
+
+  .link {
+    @apply font-medium text-brand-300 underline-offset-4 transition hover:text-brand-200 hover:underline;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-xl bg-white/[0.05];
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-300 via-brand-400 to-accent-400 bg-clip-text text-transparent;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------- Leaflet dark theme ---------------- */
+.leaflet-container {
+  @apply rounded-2xl bg-ink-900 font-sans;
+  z-index: 0;
+}
+/* OpenStreetMap tiles turned into a dark basemap (no API key needed). */
+.map-tiles-dark {
+  filter: invert(100%) hue-rotate(180deg) brightness(92%) contrast(88%) saturate(55%);
+}
+.leaflet-control-zoom a {
+  @apply !border-white/10 !bg-ink-850 !text-ink-100 hover:!bg-ink-700;
+}
+.leaflet-control-attribution {
+  @apply !bg-ink-950/70 !text-[10px] !text-ink-400;
+}
+.leaflet-control-attribution a {
+  @apply !text-ink-300;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  @apply !bg-ink-850 !text-ink-100 !shadow-2xl;
+}
+.leaflet-popup-content-wrapper {
+  @apply !rounded-xl border border-white/10;
+}
+.leaflet-popup-content {
+  @apply !my-3 !text-sm;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  @apply !text-ink-400 hover:!text-white;
+}
+.map-pin {
+  background: none;
+  border: none;
+}
+/* Smoothly glide truck markers between position updates, but not while zooming. */
+.truck-marker {
+  transition: transform 3s linear;
+}
+.leaflet-zoom-anim .truck-marker,
+.no-glide .truck-marker {
+  transition: none;
+}
+
+/* ---------------- Toasts ---------------- */
+.Toastify__toast {
+  @apply !rounded-xl !border !border-white/10 !bg-ink-850 !font-sans !text-sm !text-ink-100;
+}
+
+/* ---------------- Markdown (GreenBot) ---------------- */
+.prose-chat p {
+  @apply my-2 leading-relaxed first:mt-0 last:mb-0;
+}
+.prose-chat ul,
+.prose-chat ol {
+  @apply my-2 space-y-1 pl-5;
+}
+.prose-chat ul {
+  @apply list-disc;
+}
+.prose-chat ol {
+  @apply list-decimal;
+}
+.prose-chat strong {
+  @apply font-semibold text-white;
+}
+.prose-chat h1,
+.prose-chat h2,
+.prose-chat h3 {
+  @apply mb-1 mt-3 text-base;
+}
+.prose-chat code {
+  @apply rounded bg-white/10 px-1 py-0.5 text-[0.85em];
+}
+.prose-chat a {
+  @apply text-brand-300 underline;
+}
