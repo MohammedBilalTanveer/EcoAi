@@ -35,8 +35,11 @@ async function postJson(url, headers, body) {
 const PROVIDERS = {
   smtp: ({ to, subject, text, html }) =>
     smtpTransport().sendMail({ from: `"${env.mail.fromName}" <${env.mail.from}>`, to, subject, text, html }),
-  brevo: ({ to, subject, text, html }) =>
-    postJson(
+  brevo: async ({ to, subject, text, html }) => {
+    if (env.mail.brevoKey.startsWith('xsmtpsib-')) {
+      throw new Error('BREVO_API_KEY is an SMTP key (xsmtpsib-…), but sending needs an API key (xkeysib-…)');
+    }
+    return postJson(
       'https://api.brevo.com/v3/smtp/email',
       { 'api-key': env.mail.brevoKey },
       {
@@ -46,7 +49,8 @@ const PROVIDERS = {
         htmlContent: html,
         textContent: text,
       },
-    ),
+    );
+  },
   resend: ({ to, subject, text, html }) =>
     postJson(
       'https://api.resend.com/emails',
@@ -94,6 +98,7 @@ export async function sendMail({ to, subject, text, heading, lines, cta }) {
 function hintFor(message = '') {
   if (/sender/i.test(message)) return 'MAIL_FROM must exactly match a sender you verified in Brevo (Senders, Domains & Dedicated IPs → Senders).';
   if (/\bip\b|ip address|unrecogni[sz]ed/i.test(message)) return 'Brevo is blocking this IP address: Brevo → Security → Authorized IPs → Deactivate blocking.';
+  if (/smtp key/i.test(message)) return 'In Brevo go to Settings → SMTP & API → API Keys, click "Generate a new API key", and use that key (xkeysib-…).';
   if (/key not found|api[- ]?key|401|unauthori[sz]ed/i.test(message)) return 'Check BREVO_API_KEY: it must be an API key starting with "xkeysib-", not the SMTP key ("xsmtpsib-").';
   if (/not activated|activate/i.test(message)) return 'Your Brevo account is not activated yet: finish the account profile in Brevo.';
   if (/invalid login|username and password|535/i.test(message)) return 'Gmail rejected the login: EMAIL_HOST_PASSWORD must be a Gmail App Password.';

@@ -171,6 +171,12 @@ if (!isDev && env.jwtSecret.length < 32) {
 /** Non-fatal configuration problems, printed at startup. */
 export function configWarnings() {
   const warnings = [];
+  // Easy to mix up in Brevo's dashboard, and the API only says "Key not found".
+  if (env.mail.brevoKey.startsWith('xsmtpsib-')) {
+    warnings.push(
+      'BREVO_API_KEY is a Brevo SMTP key (xsmtpsib-…). Emails need an API key (xkeysib-…): Brevo → Settings → SMTP & API → API Keys.',
+    );
+  }
   if (isDev) return warnings;
   if (!process.env.PUBLIC_URL) warnings.push('PUBLIC_URL is not set — email links will point at localhost.');
   if (env.storage.driver === 'local') {
