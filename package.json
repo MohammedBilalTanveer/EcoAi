@@ -4,7 +4,7 @@
   "private": true,
   "description": "EcoAI \u2014 illegal dumping reports, live garbage trucks, food rescue marketplace and GreenBot, served by one Node.js + MongoDB backend",
   "scripts": {
-    "postinstall": "npm install --prefix server && npm install --prefix frontend",
+    "postinstall": "npm install --prefix server && npm install --prefix frontend --include=dev",
     "dev": "npm run dev --prefix server",
     "build": "npm run build --prefix frontend",
     "start": "npm run start --prefix server",

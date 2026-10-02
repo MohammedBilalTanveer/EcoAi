@@ -89,7 +89,8 @@ Add the variables above, plus:
 
 **New → Web Service** with:
 - **Root Directory:** *(leave empty)*
-- **Build Command:** `npm ci --prefix server --omit=dev && npm ci --prefix frontend && npm run build --prefix frontend`
+- **Build Command:** `npm ci --prefix server --omit=dev && npm ci --prefix frontend --include=dev && npm run build --prefix frontend`
+  (`--include=dev` matters: with `NODE_ENV=production`, npm would otherwise skip Vite, the website's build tool.)
 - **Start Command:** `node server/src/index.js`
 - **Health Check Path:** `/api/health`
 
