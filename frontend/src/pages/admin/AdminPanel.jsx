@@ -307,6 +307,8 @@ function Overview({ stats, onOpenUser, goTo }) {
         <ChecksCard title="Food listing photo checks" counts={stats.food.screening} onOpen={() => goTo('food')} />
       </div>
 
+      <EmailCard email={stats.email} />
+
       <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
         <div className="card p-5">
           <h3 className="text-base">Users by type</h3>
@@ -666,6 +668,83 @@ function AiFilter({ value, onChange }) {
       <option value="rejected">Rejected</option>
       <option value="review">Needs review</option>
     </select>
+  );
+}
+
+const PROVIDER_NAME = { brevo: 'Brevo', resend: 'Resend', smtp: 'SMTP' };
+
+/** Shows how email is sent and lets an admin send a test message to any address. */
+function EmailCard({ email }) {
+  const { user } = useAuth();
+  const [to, setTo] = useState(user.email);
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const send = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    setResult(null);
+    try {
+      setResult(await api('/admin/test-email', { method: 'POST', body: { to } }));
+    } catch (err) {
+      setResult({ ok: false, error: err.message });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="card p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="flex items-center gap-2 text-base">
+            <FiMail className="text-sky-300" /> Email delivery
+          </h3>
+          <p className="mt-1 text-sm text-ink-400">
+            {email?.enabled ? (
+              <>
+                On · {PROVIDER_NAME[email.provider] || email.provider} · from <b className="text-ink-200">{email.from || 'not set'}</b>
+              </>
+            ) : (
+              'Off — no email provider is configured on the server.'
+            )}
+          </p>
+        </div>
+        <form onSubmit={send} className="flex w-full flex-wrap gap-2 sm:w-auto">
+          <input
+            type="email"
+            className="input min-w-[220px] flex-1 sm:w-64"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            aria-label="Send the test email to"
+            required
+          />
+          <button type="submit" className="btn btn-secondary" disabled={sending}>
+            {sending ? <Spinner className="h-4 w-4" /> : <FiMail />} Send test email
+          </button>
+        </form>
+      </div>
+      {result && (
+        <div
+          className={cx(
+            'mt-4 rounded-xl border px-4 py-3 text-sm',
+            result.ok ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-100' : 'border-rose-500/30 bg-rose-500/10 text-rose-100',
+          )}
+        >
+          {result.ok ? (
+            <>
+              <b>Sent to {result.to}.</b> Check the inbox (and Spam / Promotions) in a minute or two.
+              {result.provider === 'brevo' && ' Delivery status is in Brevo → Transactional → Logs.'}
+            </>
+          ) : (
+            <>
+              <b>Not sent:</b> {result.error}
+              {result.hint && <span className="mt-1 block">{result.hint}</span>}
+            </>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -2,7 +2,7 @@
   "name": "ecoai",
   "version": "2.0.0",
   "private": true,
-  "description": "EcoAI \u2014 illegal dumping reports, live garbage trucks, food rescue marketplace and GreenBot, served by one Node.js + MongoDB backend",
+  "description": "EcoAI — illegal dumping reports, live garbage trucks, food rescue marketplace and GreenBot, served by one Node.js + MongoDB backend",
   "scripts": {
     "postinstall": "npm install --prefix server && npm install --prefix frontend --include=dev",
     "dev": "npm run dev --prefix server",
@@ -11,7 +11,8 @@
     "seed": "npm run seed --prefix server",
     "create-staff": "npm run create-staff --prefix server --",
     "lint": "npm run lint --prefix frontend",
-    "create-admin": "npm run create-admin --prefix server --"
+    "create-admin": "npm run create-admin --prefix server --",
+    "test-email": "npm run test-email --prefix server --"
   },
   "engines": {
     "node": "22.x"
