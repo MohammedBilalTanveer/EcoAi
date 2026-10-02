@@ -180,6 +180,9 @@ export function configWarnings() {
     warnings.push('Render’s free plan blocks SMTP — set BREVO_API_KEY (or RESEND_API_KEY) to send email.');
   }
   if (!env.mail.provider) warnings.push('No email provider configured — approval, report and food alert emails are off.');
+  if (env.mail.provider && !env.mail.from) {
+    warnings.push('MAIL_FROM is empty — emails will be rejected. Set it to the sender address you verified with your email provider.');
+  }
   if (!env.openai.apiKey && !env.geminiApiKey && !env.visionApiKey) {
     warnings.push('No AI key configured — set OPENAI_API_KEY to enable GreenBot and the photo checks.');
   }

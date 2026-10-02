@@ -11,7 +11,8 @@
     "seed": "node scripts/seed.js",
     "create-staff": "node scripts/createStaff.js",
     "build:routes": "node scripts/buildTruckRoutes.js",
-    "create-admin": "node scripts/createStaff.js --role admin"
+    "create-admin": "node scripts/createStaff.js --role admin",
+    "test-email": "node scripts/testEmail.js"
   },
   "engines": {
     "node": "22.x"

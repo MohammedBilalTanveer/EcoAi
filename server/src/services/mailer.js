@@ -90,4 +90,45 @@ export async function sendMail({ to, subject, text, heading, lines, cta }) {
   return failed.length < recipients.length;
 }
 
+/** Plain-English next step for common provider errors. */
+function hintFor(message = '') {
+  if (/sender/i.test(message)) return 'MAIL_FROM must exactly match a sender you verified in Brevo (Senders, Domains & Dedicated IPs → Senders).';
+  if (/\bip\b|ip address|unrecogni[sz]ed/i.test(message)) return 'Brevo is blocking this IP address: Brevo → Security → Authorized IPs → Deactivate blocking.';
+  if (/key not found|api[- ]?key|401|unauthori[sz]ed/i.test(message)) return 'Check BREVO_API_KEY: it must be an API key starting with "xkeysib-", not the SMTP key ("xsmtpsib-").';
+  if (/not activated|activate/i.test(message)) return 'Your Brevo account is not activated yet: finish the account profile in Brevo.';
+  if (/invalid login|username and password|535/i.test(message)) return 'Gmail rejected the login: EMAIL_HOST_PASSWORD must be a Gmail App Password.';
+  return null;
+}
+
+/**
+ * Sends one test email and reports exactly what happened, including the provider's
+ * error message, so email settings can be checked without digging through logs.
+ */
+export async function sendTestEmail(to) {
+  const info = { provider: env.mail.provider, from: env.mail.from, to };
+  if (!env.mail.provider) {
+    return { ...info, ok: false, error: 'No email provider is configured.', hint: 'Set BREVO_API_KEY and MAIL_FROM.' };
+  }
+  if (!env.mail.enabled) return { ...info, ok: false, error: 'Email is switched off.', hint: 'Remove MAIL_ENABLED=false.' };
+  if (!env.mail.from) return { ...info, ok: false, error: 'MAIL_FROM is empty.', hint: 'Set MAIL_FROM to the sender address you verified.' };
+
+  const subject = 'EcoAI test email';
+  const text = `This is a test email from EcoAI, sent through ${info.provider} from ${info.from}. Your email setup works.`;
+  const html = layout({
+    heading: 'Your email setup works 🎉',
+    lines: [
+      `This test email was sent by EcoAI through <b>${escape(info.provider)}</b> from <b>${escape(info.from)}</b>.`,
+      'Approval, report and food alert emails will be delivered the same way.',
+    ],
+    cta: { label: 'Open EcoAI', href: env.publicUrl },
+  });
+  try {
+    await PROVIDERS[info.provider]({ to, subject, text, html });
+    return { ...info, ok: true };
+  } catch (err) {
+    console.error(`[mail] test email to ${to} failed: ${err.message}`);
+    return { ...info, ok: false, error: err.message, hint: hintFor(err.message) };
+  }
+}
+
 export { escape as escapeHtml };

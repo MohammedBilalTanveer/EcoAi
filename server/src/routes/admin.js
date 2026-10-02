@@ -15,7 +15,7 @@ import {
   User,
 } from '../models/index.js';
 import { impactOf } from '../services/food.js';
-import { escapeHtml, sendMail } from '../services/mailer.js';
+import { escapeHtml, sendMail, sendTestEmail } from '../services/mailer.js';
 import { notify } from '../services/notify.js';
 import { badRequest, conflict, forbidden, notFound } from '../utils/http.js';
 import { adminUserDTO, listingDTO, reportDTO } from '../utils/serialize.js';
@@ -88,6 +88,7 @@ router.get('/stats', async (_req, res) => {
       impact: impactOf(picked.filter((c) => c.listing).map((c) => ({ ...c, unit: c.listing.quantity.unit }))),
     },
     recentUsers: recent.map((u) => adminUserDTO(u)),
+    email: { enabled: env.mail.enabled, provider: env.mail.provider, from: env.mail.from || null },
   });
 });
 
@@ -232,6 +233,20 @@ router.post('/users', async (req, res) => {
 
   const activity = await activityFor([user._id]);
   res.status(201).json({ user: adminUserDTO(user.toObject(), activity(user._id)) });
+});
+
+// POST /api/admin/test-email — send one test email (to the admin by default) and report the result
+router.post('/test-email', async (req, res) => {
+  const { to } = parse(
+    z.object({
+      to: z.preprocess(
+        (v) => (typeof v === 'string' && v.trim() ? v.trim().toLowerCase() : undefined),
+        z.email({ error: 'Please enter a valid email address.' }).optional(),
+      ),
+    }),
+    req.body,
+  );
+  res.json(await sendTestEmail(to || req.user.email));
 });
 
 // PATCH /api/admin/users/:id/status — approve / reject / suspend / reactivate
